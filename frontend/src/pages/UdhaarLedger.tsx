@@ -7,11 +7,30 @@ import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { Search, Mic, Filter, Plus, UserCircle2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const UdhaarLedger = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const { isListening, transcript, error, startListening } = useSpeechRecognition();
+
+  useEffect(() => {
+    if (transcript) {
+      setSearchQuery(transcript);
+    }
+  }, [transcript]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const customers = [
     { id: '1', name: 'Raju Yadav', balance: 12000, days: 91, score: 15, status: 'Overdue', suspicious: true },
@@ -19,6 +38,18 @@ const UdhaarLedger = () => {
     { id: '3', name: 'Ramesh Kumar', balance: 4500, days: 35, score: 45, status: 'Warning', autopay: true },
     { id: '4', name: 'Sunita Devi', balance: 1200, days: 5, score: 82, status: 'Healthy', autopay: true },
   ];
+
+  const filteredCustomers = customers.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+    
+    if (filter === 'All') return true;
+    if (filter === 'Overdue') return c.status === 'Overdue';
+    if (filter === 'AutoPay') return c.autopay;
+    if (filter === 'New') return c.days < 7;
+    if (filter === 'Suspicious') return c.suspicious;
+    return true;
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -44,8 +75,22 @@ const UdhaarLedger = () => {
       <div className="flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input className="pl-10 pr-10" placeholder="Search by name 'Ram' or 'Raju'..." />
-          <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 text-[#FF6B00]">
+          <Input 
+            className="pl-10 pr-10" 
+            placeholder="Search by name 'Ram' or 'Raju'..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className={cn(
+              "absolute right-1 top-1/2 -translate-y-1/2 transition-all duration-300",
+              isListening ? "text-red-500 animate-pulse" : "text-[#FF6B00]"
+            )}
+            onClick={startListening}
+            disabled={isListening}
+          >
             <Mic className="h-4 w-4" />
           </Button>
         </div>
@@ -65,7 +110,7 @@ const UdhaarLedger = () => {
       </div>
 
       <div className="space-y-3">
-        {customers.map((customer) => (
+        {filteredCustomers.map((customer) => (
           <Card 
             key={customer.id} 
             className="hover:border-[#FF6B00] transition-colors cursor-pointer group"

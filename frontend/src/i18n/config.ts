@@ -10,7 +10,7 @@ const resources = {
       "udhaar": "Udhaar",
       "inventory": "Inventory",
       "gst": "GST Billing",
-      "ai_chat": "Ask Sanjay",
+      "ai_chat": "Ask Munafa",
       "settings": "Settings"
     }
   },
@@ -22,7 +22,7 @@ const resources = {
       "udhaar": "उधार",
       "inventory": "इन्वेंट्री",
       "gst": "GST बिलिंग",
-      "ai_chat": "संजय से पूछें",
+      "ai_chat": "मुनाफा से पूछें",
       "settings": "सेटिंग्स"
     }
   },
@@ -34,7 +34,7 @@ const resources = {
       "udhaar": "ಉದ್ರಿ",
       "inventory": "ಇನ್ವೆಂಟರಿ",
       "gst": "GST ಬಿಲ್ಲಿಂಗ್",
-      "ai_chat": "ಸಂಜಯ್ ಅವರನ್ನು ಕೇಳಿ",
+      "ai_chat": "ಮುನಾಫಾ ಅವರನ್ನು ಕೇಳಿ",
       "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
     }
   },
@@ -46,7 +46,7 @@ const resources = {
       "udhaar": "उधार",
       "inventory": "इन्व्हेंटरी",
       "gst": "GST बिलिंग",
-      "ai_chat": "संजयला विचारा",
+      "ai_chat": "मुनाफाला विचारा",
       "settings": "सेटिंग्ज"
     }
   }

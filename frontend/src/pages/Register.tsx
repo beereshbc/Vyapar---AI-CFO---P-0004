@@ -5,13 +5,35 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { useNavigate } from 'react-router-dom';
 import { Store, User, Briefcase, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 
 const Register = () => {
   const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    storeName: '',
+    ownerName: '',
+    phone: '',
+    countryCode: '+91',
+    password: ''
+  });
+  
+  const { registerUser } = useAuth();
   const navigate = useNavigate();
 
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
+
+  const handleComplete = () => {
+    if (!formData.phone || !formData.ownerName) {
+      toast.error("Please provide owner details and phone number.");
+      return;
+    }
+    registerUser(formData.phone, formData.ownerName, formData.countryCode);
+    toast.success("Registration complete! Please login now.");
+    navigate('/login');
+  };
 
   const steps = [
     { id: 1, name: 'Store', icon: Store },
@@ -50,7 +72,11 @@ const Register = () => {
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Store Name</label>
-                <Input placeholder="e.g. Sharma Kirana Store" />
+                <Input 
+                  placeholder="e.g. Sharma Kirana Store" 
+                  value={formData.storeName}
+                  onChange={(e) => setFormData({...formData, storeName: e.target.value})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Store Address</label>
@@ -67,15 +93,28 @@ const Register = () => {
             <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Owner Name</label>
-                <Input placeholder="Your Full Name" />
+                <Input 
+                  placeholder="Your Full Name" 
+                  value={formData.ownerName}
+                  onChange={(e) => setFormData({...formData, ownerName: e.target.value})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Phone Number</label>
-                <Input type="tel" placeholder="9876543210" />
+                <PhoneInput 
+                  value={formData.phone}
+                  onChange={(val) => setFormData({...formData, phone: val})}
+                  onCountryChange={(code) => setFormData({...formData, countryCode: code})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Set Password</label>
-                <Input type="password" placeholder="••••••••" />
+                <Input 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                />
               </div>
             </div>
           )}
@@ -110,7 +149,7 @@ const Register = () => {
               Next Step <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button onClick={() => navigate('/dashboard')} className="bg-[#1A7A4A] text-white px-8">
+            <Button onClick={handleComplete} className="bg-[#1A7A4A] text-white px-8">
               Complete Registration
             </Button>
           )}

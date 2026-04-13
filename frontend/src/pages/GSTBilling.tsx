@@ -23,6 +23,10 @@ const GSTBilling = () => {
   const calculateGST = () => items.reduce((sum, item) => sum + (item.price * item.qty * (item.gst / 100)), 0);
   const total = calculateSubtotal() + calculateGST();
 
+  const handleDownload = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -149,7 +153,7 @@ const GSTBilling = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-2 p-4 bg-gray-50">
-              <Button className="w-full bg-[#FF6B00] text-white font-bold h-12 shadow-lg">
+              <Button onClick={handleDownload} className="w-full bg-[#FF6B00] text-white font-bold h-12 shadow-lg">
                 <Download className="h-4 w-4 mr-2" /> Download PDF
               </Button>
               <Button variant="outline" className="w-full border-[#1A7A4A] text-[#1A7A4A] font-bold h-12">

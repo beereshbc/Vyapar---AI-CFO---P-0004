@@ -6,9 +6,12 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Mic, Search, User, IndianRupee, MessageSquare, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const GiveUdhaar = () => {
-  const [isRecording, setIsRecording] = useState(false);
+  const { isListening, transcript, error, startListening } = useSpeechRecognition();
   const [stage, setStage] = useState('input'); // input, confirmation, success
   const [entry, setEntry] = useState({
     customer: '',
@@ -16,6 +19,39 @@ const GiveUdhaar = () => {
     reason: 'General Items'
   });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (transcript) {
+      // Simple parser: "Name Amount" or "Amount for Name"
+      const words = transcript.split(' ');
+      let amount = '';
+      let name = '';
+      
+      const digitMatch = transcript.match(/\d+/);
+      if (digitMatch) {
+        amount = digitMatch[0];
+        name = transcript.replace(amount, '').replace('for', '').replace('to', '').trim();
+      } else {
+        name = transcript;
+      }
+      
+      setEntry(prev => ({
+        ...prev,
+        customer: name || prev.customer,
+        amount: amount || prev.amount
+      }));
+      
+      if (amount && name) {
+        setStage('confirmation');
+      }
+    }
+  }, [transcript]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,21 +75,22 @@ const GiveUdhaar = () => {
             <div className="flex justify-between items-center">
               <CardTitle className="text-lg">Quick Entry</CardTitle>
               <Button 
-                variant={isRecording ? 'destructive' : 'outline'} 
+                variant={isListening ? 'destructive' : 'outline'} 
                 size="sm" 
                 className={cn(
                   "rounded-full gap-2 transition-all duration-300",
-                  isRecording && "animate-pulse"
+                  isListening && "animate-pulse"
                 )}
-                onClick={() => setIsRecording(!isRecording)}
+                onClick={startListening}
+                disabled={isListening}
               >
                 <Mic className="h-4 w-4" />
-                {isRecording ? 'Listening...' : 'Use Voice'}
+                {isListening ? 'Listening...' : 'Use Voice'}
               </Button>
             </div>
           </CardHeader>
           <CardContent className="pt-8 pb-8">
-            {isRecording ? (
+            {isListening ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-6 animate-in zoom-in-95">
                 <div className="relative">
                   <div className="absolute inset-0 bg-red-500/20 rounded-full animate-ping"></div>
@@ -62,8 +99,8 @@ const GiveUdhaar = () => {
                   </div>
                 </div>
                 <div className="text-center italic text-gray-400">
-                  <p className="text-lg font-medium text-gray-600">"Ramesh ko dus rupaye ka doodh diya"</p>
-                  <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Sanjay AI is listening (HI/EN)</p>
+                  <p className="text-lg font-medium text-gray-600">"Munafa is listening..."</p>
+                  <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Try: "Ramesh 500" or "Doodh 50"</p>
                 </div>
               </div>
             ) : (
@@ -176,7 +213,7 @@ const GiveUdhaar = () => {
       )}
 
       <p className="text-[10px] text-center text-gray-400 font-medium px-12 leading-relaxed">
-        Sanjay AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
+        Munafa AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
       </p>
     </div>
   );

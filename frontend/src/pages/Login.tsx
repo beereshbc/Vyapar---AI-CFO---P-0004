@@ -5,17 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Smartphone, Lock, ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 
 const Login = () => {
   const [phone, setPhone] = useState('');
+  const [countryCode, setCountryCode] = useState('+91');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login({ phone, password });
-    navigate('/dashboard');
+    try {
+      await login({ phone, countryCode, password });
+      toast.success('Logged in successfully!');
+      navigate('/dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Login failed');
+    }
   };
 
   return (
@@ -32,12 +40,10 @@ const Login = () => {
                 <Smartphone className="h-4 w-4 text-gray-400" />
                 Phone Number
               </label>
-              <Input 
-                type="tel" 
-                placeholder="9876543210" 
+              <PhoneInput 
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
+                onChange={setPhone}
+                onCountryChange={setCountryCode}
               />
             </div>
             <div className="space-y-2">

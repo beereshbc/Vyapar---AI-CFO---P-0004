@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Send, Mic, Sparkles, TrendingUp, AlertCircle, Calendar, Bot } from 'lucide-react';
+import { Send, Mic, Sparkles, TrendingUp, AlertCircle, Calendar, Bot, MicOff } from 'lucide-react';
+import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
-const SanjayAI = () => {
+const MunafaAI = () => {
   const [messages, setMessages] = useState([
     { 
       id: '1', 
       role: 'ai', 
-      text: 'Namaste! Main Sanjay hoon, aapka Smart CFO. Aaj aapki dukan kaisi chal rahi hai?',
+      text: 'Namaste! Main Munafa hoon, aapka Smart CFO. Aaj aapki dukan kaisi chal rahi hai?',
       time: '09:00 AM'
     },
     {
@@ -24,6 +27,19 @@ const SanjayAI = () => {
   ]);
 
   const [input, setInput] = useState('');
+  const { isListening, transcript, error, startListening } = useSpeechRecognition();
+
+  useEffect(() => {
+    if (transcript) {
+      setInput(prev => prev + (prev ? ' ' : '') + transcript);
+    }
+  }, [transcript]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -48,7 +64,7 @@ const SanjayAI = () => {
             <Bot className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Sanjay AI</h1>
+            <h1 className="text-xl font-bold text-gray-800">Munafa AI</h1>
             <div className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Online & Thinking</span>
@@ -88,7 +104,7 @@ const SanjayAI = () => {
                 )}
               </div>
               <span className="text-[8px] text-gray-400 font-medium mt-1 px-1 uppercase tracking-tighter">
-                {m.time} {m.role === 'ai' ? '• SANJAY AI' : '• YOU'}
+                {m.time} {m.role === 'ai' ? '• MUNAFA AI' : '• YOU'}
               </span>
             </div>
           ))}
@@ -96,12 +112,21 @@ const SanjayAI = () => {
 
         <CardFooter className="p-4 bg-white border-t">
           <div className="w-full flex gap-2 items-center">
-            <Button variant="outline" size="icon" className="rounded-full flex-shrink-0 text-[#FF6B00] border-orange-100">
-              <Mic className="h-5 w-5" />
+            <Button 
+              variant={isListening ? 'destructive' : 'outline'} 
+              size="icon" 
+              className={cn(
+                "rounded-full flex-shrink-0 transition-all duration-300",
+                isListening ? "animate-pulse" : "border-orange-100 text-[#FF6B00]"
+              )}
+              onClick={startListening}
+              disabled={isListening}
+            >
+              {isListening ? <Mic className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
             </Button>
             <div className="relative flex-1">
               <Input 
-                placeholder="Ask Sanjay: 'Aaj kitna udhaar diya?'" 
+                placeholder="Ask Munafa: 'Aaj kitna udhaar diya?'" 
                 className="pr-10 bg-gray-50 focus:bg-white transition-all h-12"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -135,4 +160,4 @@ const SanjayAI = () => {
   );
 };
 
-export default SanjayAI;
+export default MunafaAI;

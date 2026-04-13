@@ -109,7 +109,7 @@ const Inventory = () => {
               <Plus className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-800">Sanjay's Reorder Suggestion</p>
+              <p className="text-xs font-bold text-gray-800">Munafa's Reorder Suggestion</p>
               <p className="text-[10px] text-gray-500 italic">"Based on sales, I suggest ordering 20 boxes of Fortune Oil today."</p>
             </div>
           </div>

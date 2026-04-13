@@ -154,7 +154,7 @@ const Settings = () => {
                 {[
                   { title: 'New Udhaar Entry', desc: 'Get notified when a new entry is added via QR' },
                   { title: 'AutoPay Triggers', desc: 'Alert when an AutoPay payment is successful or failed' },
-                  { title: 'Daily AI Briefing', desc: 'Morning insights from Sanjay at 7:00 AM' },
+                  { title: 'Daily AI Briefing', desc: 'Morning insights from Munafa at 7:00 AM' },
                   { title: 'Legal Escalations', desc: 'Alerts when a customer moves to higher legal stage' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer">

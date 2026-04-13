@@ -57,11 +57,11 @@ const Dashboard = () => {
         </Card>
         <Card className="min-h-[300px]">
           <CardHeader>
-            <CardTitle className="text-lg">Sanjay's Daily Briefing</CardTitle>
+            <CardTitle className="text-lg">Munafa's Daily Briefing</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="bg-orange-50 p-4 rounded-lg border border-orange-100 flex gap-3 italic text-sm text-gray-700">
-              <div className="bg-orange-500 h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold">S</div>
+              <div className="bg-orange-500 h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold">M</div>
               "Namaste! Today you have 5 overdue payments. I suggest sending WhatsApp reminders to Raju and Mohan."
             </div>
           </CardContent>
