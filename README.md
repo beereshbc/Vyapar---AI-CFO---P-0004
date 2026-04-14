@@ -11,7 +11,7 @@
 [![React](https://img.shields.io/badge/Frontend-React%2018-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Backend-Node.js%2020-339933?style=for-the-badge&logo=nodedotjs)](https://nodejs.org)
 
-> **"Apni Dukan Ka Smart CFO"** — Udhaar track karo. GST file karo. Cash flow samjho. Sab ek jagah — SanjayAI ke saath.
+> **"Apni Dukan Ka Smart CFO"** — Udhaar track karo. GST file karo. Cash flow samjho. Sab ek jagah — MunafaAI ke saath.
 
 [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [Architecture](#-architecture) • [Security](#-security) • [Screenshots](#-screenshots) • [Contributing](#-contributing)
 
@@ -29,7 +29,7 @@ The app solves three core problems that every small Indian store owner faces dai
 2. **GST Compliance** — Creating tax invoices and generating filing summaries without a CA
 3. **Payment Recovery** — Automatically collecting dues via UPI AutoPay and an escalating legal ladder
 
-Built by **Sanjayakumar S H**, powered by **Anthropic Claude AI**.
+Built by **Munafaakumar S H**, powered by **Anthropic Claude AI**.
 
 ---
 
@@ -49,7 +49,7 @@ Built by **Sanjayakumar S H**, powered by **Anthropic Claude AI**.
 - QR analytics: scans today / this week / total
 - Share QR directly via WhatsApp
 
-### 🤖 AI Agent — Sanjay
+### 🤖 AI Agent — Munafa
 - Powered by **Claude Sonnet 4.6** via Anthropic API
 - Speaks **English, Hindi, Kannada, and Marathi** (auto-detects your language)
 - Every morning delivers 3 specific, data-driven business insights
@@ -96,7 +96,7 @@ A proprietary 0–100 credit score, auto-recalculated daily:
 ### 📦 Inventory Management
 - Stock levels with reorder alerts
 - Color-coded: In Stock (green) | Low (amber) | Out of Stock (red)
-- AI-powered reorder suggestions from Sanjay
+- AI-powered reorder suggestions from Munafa
 - Purchase order PDF generation
 - Stock movement log (purchase in / sale out / manual)
 
@@ -315,15 +315,15 @@ VITE_QR_BASE_URL=http://localhost:5173/qr
 | `/gst` | GST Billing + Invoices | Protected |
 | `/inventory` | Inventory Management | Protected |
 | `/payouts` | Payout Dashboard | Protected |
-| `/ai` | Sanjay AI Chat | Protected |
+| `/ai` | Munafa AI Chat | Protected |
 | `/settings` | Settings (5 tabs) | Protected |
 | `/my-udhaar` | Udhaarist Dashboard | Customer |
 
 ---
 
-## 🤖 Sanjay — AI CFO System Prompt
+## 🤖 Munafa — AI CFO System Prompt
 
-Sanjay is configured with deep context about Indian MSME finance. He:
+Munafa is configured with deep context about Indian MSME finance. He:
 - Responds in the user's language (auto-detected)
 - Uses ₹ and Indian number format in all responses
 - Has access to the store's live financial data on every message
@@ -340,7 +340,7 @@ Sanjay is configured with deep context about Indian MSME finance. He:
 | Legal Escalation Ladder | Daily at 9 AM IST | Checks all overdue customers, auto-escalates stage |
 | Udhaar Score Recalculation | Daily at 9 AM IST | Recalculates score for all customers with balance |
 | AutoPay Trigger Check | Every 30 minutes | Checks mandates due for deduction |
-| Daily AI Briefing | Daily at 7 AM IST | Generates Sanjay's morning insights for each store |
+| Daily AI Briefing | Daily at 7 AM IST | Generates Munafa's morning insights for each store |
 
 ---
 
@@ -374,7 +374,7 @@ Sanjay is configured with deep context about Indian MSME finance. He:
 - [ ] Customer scans QR → selfie → AutoPay → success in under 5 minutes
 - [ ] Razorpay checkout processes payment end-to-end (test mode)
 - [ ] AutoPay mandate creation works
-- [ ] Sanjay responds in Hindi and English with live store context
+- [ ] Munafa responds in Hindi and English with live store context
 - [ ] Voice input shows recording waveform animation
 - [ ] Language toggle switches all text (EN/HI/KN/MR)
 - [ ] GST invoice creates with auto tax + PDF download
@@ -425,7 +425,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 👨‍💻 Author
 
-**Sanjayakumar S H**
+**Munafaakumar S H**
 
 Built with ❤️ for Bharat's 6.3 Crore Store Owners.
 
