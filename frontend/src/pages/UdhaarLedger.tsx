@@ -8,6 +8,9 @@ import { formatCurrency } from '@/lib/utils';
 import { Search, Mic, Filter, Plus, UserCircle2, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { api } from '@/lib/api';
+import { exportToCSV } from '@/lib/exportUtils';
+import { Download } from 'lucide-react';
 
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useEffect } from 'react';
@@ -32,12 +35,22 @@ const UdhaarLedger = () => {
     }
   }, [error]);
 
-  const customers = [
-    { id: '1', name: 'Raju Yadav', balance: 12000, days: 91, score: 15, status: 'Overdue', suspicious: true },
-    { id: '2', name: 'Mohan Lal', balance: 8000, days: 65, score: 22, status: 'Overdue' },
-    { id: '3', name: 'Ramesh Kumar', balance: 4500, days: 35, score: 45, status: 'Warning', autopay: true },
-    { id: '4', name: 'Sunita Devi', balance: 1200, days: 5, score: 82, status: 'Healthy', autopay: true },
-  ];
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [isLoadingCustomers, setIsLoadingCustomers] = useState(true);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const data = await api.get('/ledger/customers');
+        setCustomers(data);
+      } catch (err: any) {
+        toast.error("Could not sync ledger with cloud.");
+      } finally {
+        setIsLoadingCustomers(false);
+      }
+    };
+    fetchCustomers();
+  }, []);
 
   const filteredCustomers = customers.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -67,9 +80,19 @@ const UdhaarLedger = () => {
           <h1 className="text-2xl font-bold text-gray-800">{t('udhaar')} Ledger</h1>
           <p className="text-sm text-gray-500">Managing 42 active credit accounts</p>
         </div>
-        <Button onClick={() => navigate('/give-udhaar')} className="bg-[#FF6B00] text-white">
-          <Plus className="h-4 w-4 mr-2" /> New Entry
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-orange-100 text-[#FF6B00] h-10 gap-2"
+            onClick={() => exportToCSV(customers.map(c => ({ Name: c.name, Phone: c.phone, Balance: c.currentBalance })), 'Vyapar_Full_Ledger')}
+          >
+            <Download className="h-4 w-4" /> Export All
+          </Button>
+          <Button onClick={() => navigate('/give-udhaar')} className="bg-[#FF6B00] text-white">
+            <Plus className="h-4 w-4 mr-2" /> New Entry
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-3">
@@ -110,59 +133,70 @@ const UdhaarLedger = () => {
       </div>
 
       <div className="space-y-3">
-        {filteredCustomers.map((customer) => (
-          <Card 
-            key={customer.id} 
-            className="hover:border-[#FF6B00] transition-colors cursor-pointer group"
-            onClick={() => navigate(`/customers/${customer.id}`)}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-[#FF6B00] font-bold text-lg">
-                    {customer.name.charAt(0)}
+        {isLoadingCustomers ? (
+          <div className="flex flex-col items-center justify-center p-12 space-y-4">
+            <div className="h-12 w-12 border-4 border-orange-200 border-t-[#FF6B00] rounded-full animate-spin"></div>
+            <p className="text-gray-500 font-medium">Syncing Ledger...</p>
+          </div>
+        ) : filteredCustomers.length === 0 ? (
+          <div className="text-center p-12 bg-white rounded-xl border border-dashed border-orange-200">
+            <p className="text-gray-400">No customers found in this sector.</p>
+          </div>
+        ) : (
+          filteredCustomers.map((customer) => (
+            <Card 
+              key={customer._id} 
+              className="hover:border-[#FF6B00] transition-colors cursor-pointer group"
+              onClick={() => navigate(`/customers/${customer._id}`)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center text-[#FF6B00] font-bold text-lg">
+                      {customer.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-gray-800 group-hover:text-[#FF6B00] transition-colors">
+                          {customer.name}
+                        </h3>
+                        {customer.suspicious && (
+                          <Badge variant="destructive" className="text-[8px] px-1 h-3 uppercase">Suspicious</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <Badge variant={getStatusColor(customer.currentBalance > 10000 ? 'Overdue' : 'Healthy')} className="text-[10px] h-4">
+                          {customer.currentBalance > 0 ? "Outstanding" : "Settled"}
+                        </Badge>
+                        {customer.hasAutoPay && (
+                          <span className="text-[10px] text-green-600 font-bold flex items-center gap-1">
+                            <CheckCircle2 className="h-3 w-3" /> AutoPay
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-gray-800 group-hover:text-[#FF6B00] transition-colors">
-                        {customer.name}
-                      </h3>
-                      {customer.suspicious && (
-                        <Badge variant="destructive" className="text-[8px] px-1 h-3 uppercase">Suspicious</Badge>
-                      )}
+                  
+                  <div className="text-right flex flex-col items-end gap-1">
+                    <div className="text-lg font-black text-gray-900">
+                      {formatCurrency(customer.currentBalance)}
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <Badge variant={getStatusColor(customer.status)} className="text-[10px] h-4">
-                        {customer.days} days overdue
-                      </Badge>
-                      {customer.autopay && (
-                        <span className="text-[10px] text-green-600 font-bold flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" /> AutoPay
-                        </span>
-                      )}
+                    <div className="flex items-center gap-1">
+                      <span className="text-[10px] text-gray-400">Score:</span>
+                      <span className={cn(
+                        "text-xs font-bold",
+                        customer.creditScore > 70 ? "text-green-600" : customer.creditScore > 30 ? "text-orange-500" : "text-red-600"
+                      )}>
+                        {customer.creditScore}
+                      </span>
                     </div>
+                    <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-[#FF6B00] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
-                
-                <div className="text-right flex flex-col items-end gap-1">
-                  <div className="text-lg font-black text-gray-900">
-                    {formatCurrency(customer.balance)}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[10px] text-gray-400">Score:</span>
-                    <span className={cn(
-                      "text-xs font-bold",
-                      customer.score > 70 ? "text-green-600" : customer.score > 30 ? "text-orange-500" : "text-red-600"
-                    )}>
-                      {customer.score}
-                    </span>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-[#FF6B00] group-hover:translate-x-1 transition-all" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );

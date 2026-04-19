@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Send, Mic, Sparkles, TrendingUp, AlertCircle, Calendar, Bot, MicOff } from 'lucide-react';
+import { api } from '@/lib/api';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
@@ -27,6 +28,7 @@ const MunafaAI = () => {
   ]);
 
   const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const { isListening, transcript, error, startListening } = useSpeechRecognition();
 
   useEffect(() => {
@@ -41,19 +43,27 @@ const MunafaAI = () => {
     }
   }, [error]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages([...messages, { id: Date.now().toString(), role: 'user', text: input, time: 'Now' }]);
+  const handleSend = async () => {
+    if (!input.trim() || isTyping) return;
+    
+    const userMsg = { id: Date.now().toString(), role: 'user', text: input, time: 'Now' };
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
-    // Mock AI response
-    setTimeout(() => {
+    setIsTyping(true);
+
+    try {
+      const data = await api.post('/ai/chat', { message: input });
       setMessages(prev => [...prev, { 
         id: (Date.now() + 1).toString(), 
         role: 'ai', 
-        text: 'Samajh gaya. Aapka is mahine ka GST ₹4,200 banta hai. Kya main report generate karu?',
+        text: data.reply,
         time: 'Now' 
       }]);
-    }, 1000);
+    } catch (err: any) {
+      toast.error("AI disconnected from satellite.");
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -108,6 +118,13 @@ const MunafaAI = () => {
               </span>
             </div>
           ))}
+          {isTyping && (
+            <div className="mr-auto items-start max-w-[85%] animate-pulse">
+                <div className="bg-white border text-gray-800 rounded-2xl rounded-tl-none p-4 text-sm shadow-sm">
+                  Munafa is thinking...
+                </div>
+            </div>
+          )}
         </CardContent>
 
         <CardFooter className="p-4 bg-white border-t">
