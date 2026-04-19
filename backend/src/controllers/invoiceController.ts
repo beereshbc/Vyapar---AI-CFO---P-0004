@@ -5,9 +5,8 @@ export const createInvoice = async (req: Request, res: Response) => {
   try {
     const { items, subtotal, gstAmount, total } = req.body;
     
-    // AuthMiddleware usually sets req.user (we use userId as storeId globally here for simplicty)
     // @ts-ignore
-    const storeId = req.user?.storeId;
+    const storeId = req.storeId || req.userId; // fallback to userId if storeId is missing
 
     if (!storeId) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -32,7 +31,7 @@ export const createInvoice = async (req: Request, res: Response) => {
 export const getInvoicesCount = async (req: Request, res: Response) => {
   try {
     // @ts-ignore
-    const storeId = req.user?.storeId;
+    const storeId = req.storeId || req.userId;
 
     if (!storeId) {
       return res.status(401).json({ error: 'Unauthorized' });
