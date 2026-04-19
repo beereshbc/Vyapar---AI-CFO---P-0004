@@ -45,6 +45,12 @@ const GSTBilling = () => {
     }
   };
 
+  const handleWhatsAppShare = () => {
+    const text = `Hello! Here is your GST Invoice for the amount of ${formatCurrency(total)}. Please review.\n\nPowered by Munafa AI.`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -174,7 +180,7 @@ const GSTBilling = () => {
               <Button onClick={handleDownload} disabled={isSaving} className="w-full bg-[#FF6B00] text-white font-bold h-12 shadow-lg">
                 <Download className="h-4 w-4 mr-2" /> {isSaving ? "Saving..." : "Download PDF"}
               </Button>
-              <Button variant="outline" className="w-full border-[#1A7A4A] text-[#1A7A4A] font-bold h-12">
+              <Button onClick={handleWhatsAppShare} variant="outline" className="w-full border-[#1A7A4A] text-[#1A7A4A] font-bold h-12">
                 <Share2 className="h-4 w-4 mr-2" /> Share on WhatsApp
               </Button>
             </CardFooter>
