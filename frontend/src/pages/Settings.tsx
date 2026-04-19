@@ -14,7 +14,9 @@ import {
   Smartphone, 
   Paintbrush, 
   Smartphone as PhoneIcon,
-  CreditCard
+  CreditCard,
+  Bot,
+  Landmark
 } from 'lucide-react';
 
 const Settings = () => {
@@ -23,6 +25,8 @@ const Settings = () => {
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'store', name: 'Store Info', icon: Store },
+    { id: 'munafa', name: 'Munafa AI', icon: Bot },
+    { id: 'banking', name: 'Bank & UPI', icon: Landmark },
     { id: 'appearance', name: 'Appearance', icon: Paintbrush },
     { id: 'notifications', name: 'Alerts', icon: Bell },
     { id: 'security', name: 'Security', icon: Shield },
@@ -108,6 +112,105 @@ const Settings = () => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Business Category</label>
                     <Input defaultValue="Kirana Store" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeTab === 'munafa' && (
+            <Card className="animate-in fade-in slide-in-from-right-4 border-orange-200">
+              <CardHeader className="bg-orange-50/50 pb-4">
+                <CardTitle className="text-xl text-[#FF6B00]">Munafa AI & Automation Hub</CardTitle>
+                <CardDescription>Configure how your AI CFO interacts with your customers.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6 pt-6">
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-gray-800">WhatsApp Reminder Tone</label>
+                  <p className="text-xs text-gray-500 pb-2">Select Munafa's personality for recovering Udhaar.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="border hover:border-blue-300 p-4 rounded-xl cursor-pointer bg-blue-50/50 flex flex-col gap-1 transition-all">
+                      <span className="font-bold text-blue-700">Polite</span>
+                      <span className="text-[10px] text-gray-500">Soft, gentle reminders. Great for loyal customers.</span>
+                    </div>
+                    <div className="border-2 border-[#FF6B00] bg-orange-50 p-4 rounded-xl cursor-pointer flex flex-col gap-1 shadow-sm transition-all focus:ring-2 focus:ring-orange-200">
+                      <span className="font-bold text-[#FF6B00]">Negotiator</span>
+                      <span className="text-[10px] text-gray-500">Firm but offers solutions. (Currently Active)</span>
+                    </div>
+                    <div className="border hover:border-red-300 p-4 rounded-xl cursor-pointer bg-red-50/50 flex flex-col gap-1 transition-all">
+                      <span className="font-bold text-red-700">Strict</span>
+                      <span className="text-[10px] text-gray-500">Aggressive timeline demands. Last resort.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-gray-100">
+                  <label className="text-sm font-bold text-gray-800">Auto-Remind Thresholds</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-xs font-semibold text-gray-500">Minimum Balance Trigger</label>
+                       <div className="relative">
+                         <span className="absolute left-3 top-2.5 text-gray-500 font-bold">₹</span>
+                         <Input type="number" defaultValue="500" className="pl-7 bg-white shadow-sm" />
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-xs font-semibold text-gray-500">Overdue Days Trigger</label>
+                       <div className="relative flex items-center">
+                         <Input type="number" defaultValue="15" className="pr-12 bg-white shadow-sm" />
+                         <span className="absolute right-3 top-2.5 text-gray-500 text-xs font-medium uppercase">days</span>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-gray-100">
+                  <div className="space-y-1">
+                    <label className="text-sm font-bold text-gray-800">Operating Hours</label>
+                    <p className="text-[10px] text-gray-500 pb-1">Ensure Munafa does not message customers late at night.</p>
+                  </div>
+                  <div className="flex gap-4 items-center">
+                    <Input type="time" defaultValue="09:00" className="w-[140px] shadow-sm bg-white" />
+                    <span className="text-xs font-bold text-gray-400 uppercase">to</span>
+                    <Input type="time" defaultValue="20:00" className="w-[140px] shadow-sm bg-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeTab === 'banking' && (
+            <Card className="animate-in fade-in slide-in-from-right-4 border-green-200">
+              <CardHeader className="bg-[#1A7A4A]/5 pb-4">
+                <CardTitle className="text-xl text-[#1A7A4A] flex items-center gap-2">
+                  <Landmark className="h-5 w-5" /> Bank & UPI Integrations
+                </CardTitle>
+                <CardDescription>Bind your payment gateways for automated collections.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6 pt-6">
+                <div className="space-y-4 p-4 border border-green-200 bg-white rounded-xl relative overflow-hidden shadow-sm">
+                  <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-green-50 to-transparent pointer-events-none"></div>
+                  <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+                    <label className="text-sm font-bold text-[#1A7A4A]">Merchant UPI QR Binding</label>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Primary VPA (UPI ID)</label>
+                    <Input defaultValue="sharmastore@bharatpe" className="border-green-300 font-bold bg-green-50 focus:bg-white transition-colors" />
+                  </div>
+                  <p className="text-[10px] text-green-700 italic border-l-2 border-green-300 pl-2">Munafa AI will automatically encode this UPI ID into a scannable QR on all outgoing WhatsApp invoices so your customers can tap and pay instantly.</p>
+                </div>
+
+                <div className="space-y-4 pt-2">
+                  <label className="text-sm font-bold text-gray-800 border-b pb-2 block w-full border-gray-100">B2B Settlement Preferences (NEFT/RTGS)</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Account Number</label>
+                       <Input type="password" defaultValue="012345678912345" className="bg-white shadow-sm" />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">IFSC Code</label>
+                       <Input defaultValue="HDFC0001234" className="uppercase bg-white shadow-sm" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
