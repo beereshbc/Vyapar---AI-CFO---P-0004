@@ -43,9 +43,9 @@ const Dashboard = () => {
   }, []);
 
   const stats = [
-    { title: 'Total Udhaar', value: statsData?.totalUdhaar || 0, icon: Wallet, trend: '+0%', color: 'text-red-600' },
-    { title: 'Active Customers', value: statsData?.activeCustomers || 0, icon: Users, trend: 'New', color: 'text-blue-600' },
-    { title: 'Invoices (MTD)', value: statsData?.invoices || 0, icon: FileText, trend: '+0%', color: 'text-green-600' },
+    { title: 'Total Udhaar', value: statsData?.totalUdhaar || 0, icon: Wallet, trend: '+0%', color: 'text-red-600', isCurrency: true },
+    { title: 'Active Customers', value: statsData?.activeCustomers || 0, icon: Users, trend: 'New', color: 'text-blue-600', isCurrency: false },
+    { title: 'Invoices (MTD)', value: statsData?.invoices || 0, icon: FileText, trend: '+0%', color: 'text-green-600', isCurrency: false },
   ];
 
   return (
@@ -63,7 +63,7 @@ const Dashboard = () => {
                 <Download className="h-4 w-4" /> Download Report
             </Button>
             <div className="bg-white px-4 py-2 rounded-lg shadow-sm border text-sm font-medium">
-            13 Apr 2026
+              {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
             </div>
         </div>
       </div>
@@ -88,7 +88,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {typeof stat.value === 'number' ? formatCurrency(stat.value) : stat.value}
+                  {stat.isCurrency ? formatCurrency(stat.value) : stat.value}
                 </div>
                 <p className={`text-xs mt-1 font-medium ${stat.color} flex items-center`}>
                   {stat.trend.startsWith('+') ? <ArrowUpRight className="h-3 w-3 mr-1" /> : (stat.trend === 'New' ? <TrendingUp className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />)}
@@ -113,7 +113,7 @@ const Dashboard = () => {
         </Card>
         <Card className="min-h-[300px]">
           <CardHeader>
-            <CardTitle className="text-lg">Munafa's Daily Briefing</CardTitle>
+            <CardTitle className="text-lg">Aadaya's Daily Briefing</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="bg-orange-50 p-4 rounded-lg border border-orange-100 flex gap-3 italic text-sm text-gray-700">
