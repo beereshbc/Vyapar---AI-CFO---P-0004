@@ -50,11 +50,42 @@ export const addTransaction = async (req: AuthRequest, res: Response) => {
       { new: true }
     );
 
-    if (!customer) {
-      throw new Error('Customer not found');
+    if (!customer) throw new Error('Customer not found');
+
+    // ─────────────────────────────────────────────
+    // AUTO CREDIT SCORING ENGINE
+    // ─────────────────────────────────────────────
+    let newScore = customer.creditScore;
+
+    if (type === 'Credit') {
+      // Udhaar given → score drops
+      newScore -= 5;
+      if (amount > 2000)  newScore -= 5;  // Large udhaar penalised more
+      if (amount > 5000)  newScore -= 10; // Very large udhaar
+    } else {
+      // Payment received → score improves
+      newScore += 10;
+      if (amount > 2000)  newScore += 5;  // Rewarded for paying large amounts
     }
 
-    res.status(201).json({ transaction: newTransaction, updatedBalance: customer.currentBalance });
+    // Extra penalty: high outstanding balance is risky
+    if (customer.currentBalance > 5000)  newScore -= 10;
+    if (customer.currentBalance > 10000) newScore -= 10;
+
+    // Clamp score between 0–100
+    newScore = Math.max(0, Math.min(100, newScore));
+
+    // Auto-flag as Suspicious if score drops below 20
+    const isSuspicious = newScore < 20;
+
+    await Customer.findByIdAndUpdate(customerId, { creditScore: newScore, isSuspicious });
+
+    res.status(201).json({
+      transaction: newTransaction,
+      updatedBalance: customer.currentBalance,
+      creditScore: newScore,
+      isSuspicious
+    });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
