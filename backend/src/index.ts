@@ -28,15 +28,12 @@ const connectDB = async () => {
     let uri = process.env.MONGO_URI || 'mongodb://localhost:27017/vyapar_ai';
     
     try {
-        // Try local connection first with a short timeout
-        await mongoose.connect(uri, { serverSelectionTimeoutMS: 2000 });
-        console.log('✅ Connected to Local MongoDB');
+        console.log('⏳ Connecting to MongoDB Atlas Cluster...');
+        await mongoose.connect(uri, { serverSelectionTimeoutMS: 15000 });
+        console.log('✅ Connected seamlessly to MongoDB Atlas Cluster');
     } catch (err) {
-        console.warn('⚠️ Local MongoDB not found, spinning up in-memory database for demo...');
-        const mongoServer = await MongoMemoryServer.create();
-        uri = mongoServer.getUri();
-        await mongoose.connect(uri);
-        console.log('🚀 In-Memory MongoDB Started (Zero-Config Mode)');
+        console.error('❌ CRITICAL ERROR: Could not connect to MongoDB Atlas!', err);
+        console.error('Please ensure your local IP address is whitelisted in your MongoDB Atlas Network Access settings.');
     }
 };
 
