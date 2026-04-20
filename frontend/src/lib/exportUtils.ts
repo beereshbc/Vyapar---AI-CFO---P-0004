@@ -23,7 +23,7 @@ export const exportToCSV = (data: any[], filename: string) => {
 export const exportCustomerLedgerPDF = (customer: any, transactions: any[], storeName: string) => {
   const doc = new jsPDF();
 
-  // Header - Munafa Branding
+  // Header - Aadaya Branding
   doc.setFontSize(22);
   doc.setTextColor(255, 107, 0); // #FF6B00
   doc.text('AADAYA AI CFO', 105, 20, { align: 'center' });
@@ -78,4 +78,5 @@ export const exportCustomerLedgerPDF = (customer: any, transactions: any[], stor
 
   doc.save(`${customer.name}_Ledger_${new Date().toISOString().split('T')[0]}.pdf`);
 };
+
 

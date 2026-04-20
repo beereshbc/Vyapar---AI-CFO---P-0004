@@ -78,7 +78,7 @@ const Settings = () => {
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'store', name: 'Store Info', icon: Store },
-    { id: 'munafa', name: 'Aadaya AI', icon: Bot },
+    { id: 'Aadaya', name: 'Aadaya AI', icon: Bot },
     { id: 'banking', name: 'Bank & UPI', icon: Landmark },
     { id: 'appearance', name: 'Appearance', icon: Paintbrush },
     { id: 'notifications', name: 'Alerts', icon: Bell },
@@ -175,7 +175,7 @@ const Settings = () => {
             </Card>
           )}
 
-          {activeTab === 'munafa' && (
+          {activeTab === 'Aadaya' && (
             <Card className="animate-in fade-in slide-in-from-right-4 border-orange-200 shadow-md">
               <CardHeader className="bg-orange-50/50 pb-4">
                 <CardTitle className="text-xl text-[#FF6B00] flex items-center gap-2">
@@ -186,7 +186,7 @@ const Settings = () => {
               <CardContent className="space-y-8 pt-6">
                 <div className="space-y-3">
                   <label className="text-sm font-bold text-gray-800">WhatsApp Reminder Tone</label>
-                  <p className="text-xs text-gray-500 pb-2">Select Munafa's personality for recovering Udhaar.</p>
+                  <p className="text-xs text-gray-500 pb-2">Select Aadaya's personality for recovering Udhaar.</p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div 
                       onClick={() => updateField('aiTone', 'Polite')} 
@@ -248,7 +248,7 @@ const Settings = () => {
                 <div className="space-y-4 pt-4 border-t border-gray-100">
                   <div className="space-y-1">
                     <label className="text-sm font-bold text-gray-800">Operating Hours</label>
-                    <p className="text-[10px] text-gray-500 pb-1">Ensure Munafa does not message customers late at night.</p>
+                    <p className="text-[10px] text-gray-500 pb-1">Ensure Aadaya does not message customers late at night.</p>
                   </div>
                   <div className="flex gap-4 items-center bg-gray-50 p-4 rounded-xl border border-gray-100 w-fit">
                     <Input 
@@ -367,7 +367,7 @@ const Settings = () => {
                 {[
                   { title: 'New Udhaar Entry', desc: 'Get notified when a new entry is added via QR' },
                   { title: 'AutoPay Triggers', desc: 'Alert when an AutoPay payment is successful or failed' },
-                  { title: 'Daily AI Briefing', desc: 'Morning insights from Munafa at 7:00 AM' },
+                  { title: 'Daily AI Briefing', desc: 'Morning insights from Aadaya at 7:00 AM' },
                   { title: 'Legal Escalations', desc: 'Alerts when a customer moves to higher legal stage' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
@@ -419,4 +419,5 @@ const Settings = () => {
 };
 
 export default Settings;
+
 

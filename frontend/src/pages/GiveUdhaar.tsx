@@ -95,7 +95,7 @@ const GiveUdhaar = () => {
       
       // Only auto-confirm if we have the critical bits
       if (amount && name) {
-        toast.info("Munafa understood! Confirming your entry...");
+        toast.info("Aadaya understood! Confirming your entry...");
         setTimeout(() => setStage('confirmation'), 1000);
       }
     }
@@ -181,7 +181,7 @@ const GiveUdhaar = () => {
                   </div>
                 </div>
                 <div className="text-center italic text-gray-400">
-                  <p className="text-lg font-medium text-gray-600">"Munafa is listening..."</p>
+                  <p className="text-lg font-medium text-gray-600">"Aadaya is listening..."</p>
                   <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Try: "Ramesh 500" or "Doodh 50"</p>
                 </div>
               </div>
@@ -317,4 +317,5 @@ const GiveUdhaar = () => {
 };
 
 export default GiveUdhaar;
+
 
