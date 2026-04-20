@@ -6,14 +6,14 @@ export const getInsights = async (req: AuthRequest, res: Response) => {
   try {
     const { message } = req.body;
     
-    // Simple business logic mock for "Munafa AI"
+    // Simple business logic mock for "Aadaya AI"
     const overdueCount = await Customer.countDocuments({ storeId: req.storeId, currentBalance: { $gt: 10000 } });
     
     let aiResponse = "I'm analyzing your business data... ";
     
     if (message.toLowerCase().includes('udhaar') || message.toLowerCase().includes('credit')) {
       aiResponse += `You have ${overdueCount} customers with high outstanding balances. I suggest sending a reminder to Raju Yadav first.`;
-    } else if (message.toLowerCase().includes('profit') || message.toLowerCase().includes('munafa')) {
+    } else if (message.toLowerCase().includes('profit') || message.toLowerCase().includes('aadaya')) {
       aiResponse += "Your cash flow is looking healthy this month, but inventory turnover for 'Daily Needs' is slower than last week.";
     } else {
       aiResponse += "How can I help you grow your business today? I can track Udhaar, manage inventory, or analyze your payouts.";
@@ -24,3 +24,5 @@ export const getInsights = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+

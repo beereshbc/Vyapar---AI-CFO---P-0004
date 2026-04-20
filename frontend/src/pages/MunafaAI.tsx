@@ -10,12 +10,12 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
-const MunafaAI = () => {
+const AadayaAI = () => {
   const [messages, setMessages] = useState([
     { 
       id: '1', 
       role: 'ai', 
-      text: 'Namaste! Main Munafa hoon, aapka Smart CFO. Aaj aapki dukan kaisi chal rahi hai?',
+      text: 'Namaste! Main Aadaya hoon, aapka Smart CFO. Aaj aapki dukan kaisi chal rahi hai?',
       time: '09:00 AM'
     },
     {
@@ -74,7 +74,7 @@ const MunafaAI = () => {
             <Bot className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Munafa AI</h1>
+            <h1 className="text-xl font-bold text-gray-800">AADAYA AI</h1>
             <div className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Online & Thinking</span>
@@ -114,14 +114,14 @@ const MunafaAI = () => {
                 )}
               </div>
               <span className="text-[8px] text-gray-400 font-medium mt-1 px-1 uppercase tracking-tighter">
-                {m.time} {m.role === 'ai' ? '• MUNAFA AI' : '• YOU'}
+                {m.time} {m.role === 'ai' ? '• AADAYA AI' : '• YOU'}
               </span>
             </div>
           ))}
           {isTyping && (
             <div className="mr-auto items-start max-w-[85%] animate-pulse">
                 <div className="bg-white border text-gray-800 rounded-2xl rounded-tl-none p-4 text-sm shadow-sm">
-                  Munafa is thinking...
+                  Aadaya is thinking...
                 </div>
             </div>
           )}
@@ -143,7 +143,7 @@ const MunafaAI = () => {
             </Button>
             <div className="relative flex-1">
               <Input 
-                placeholder="Ask Munafa: 'Aaj kitna udhaar diya?'" 
+                placeholder="Ask Aadaya: 'Aaj kitna udhaar diya?'" 
                 className="pr-10 bg-gray-50 focus:bg-white transition-all h-12"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -177,4 +177,6 @@ const MunafaAI = () => {
   );
 };
 
-export default MunafaAI;
+export default AadayaAI;
+
+
