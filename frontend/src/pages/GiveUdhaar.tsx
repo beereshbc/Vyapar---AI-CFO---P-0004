@@ -95,7 +95,7 @@ const GiveUdhaar = () => {
       
       // Only auto-confirm if we have the critical bits
       if (amount && name) {
-        toast.info("Munafa understood! Confirming your entry...");
+        toast.info("Aadaya understood! Confirming your entry...");
         setTimeout(() => setStage('confirmation'), 1000);
       }
     }
@@ -181,7 +181,7 @@ const GiveUdhaar = () => {
                   </div>
                 </div>
                 <div className="text-center italic text-gray-400">
-                  <p className="text-lg font-medium text-gray-600">"Munafa is listening..."</p>
+                  <p className="text-lg font-medium text-gray-600">"Aadaya is listening..."</p>
                   <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Try: "Ramesh 500" or "Doodh 50"</p>
                 </div>
               </div>
@@ -310,10 +310,12 @@ const GiveUdhaar = () => {
       )}
 
       <p className="text-[10px] text-center text-gray-400 font-medium px-12 leading-relaxed">
-        Munafa AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
+        Aadaya AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
       </p>
     </div>
   );
 };
 
 export default GiveUdhaar;
+
+

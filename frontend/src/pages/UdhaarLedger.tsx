@@ -57,10 +57,14 @@ const UdhaarLedger = () => {
     if (!matchesSearch) return false;
     
     if (filter === 'All') return true;
-    if (filter === 'Overdue') return c.status === 'Overdue';
-    if (filter === 'AutoPay') return c.autopay;
-    if (filter === 'New') return c.days < 7;
-    if (filter === 'Suspicious') return c.suspicious;
+    if (filter === 'Overdue') return c.currentBalance > 0;  // Has outstanding balance
+    if (filter === 'AutoPay') return c.hasAutoPay === true; // Uses correct schema field
+    if (filter === 'New') {                                 // Registered within last 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      return new Date(c.createdAt) >= sevenDaysAgo;
+    }
+    if (filter === 'Suspicious') return c.isSuspicious === true; // Uses correct schema field
     return true;
   });
 
@@ -78,7 +82,7 @@ const UdhaarLedger = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">{t('udhaar')} Ledger</h1>
-          <p className="text-sm text-gray-500">Managing 42 active credit accounts</p>
+          <p className="text-sm text-gray-500">Managing {customers.length} active credit accounts</p>
         </div>
         <div className="flex gap-3">
           <Button 

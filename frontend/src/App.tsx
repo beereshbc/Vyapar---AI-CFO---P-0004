@@ -11,7 +11,7 @@ import CustomerDetails from './pages/CustomerDetails';
 import MyUdhaar from './pages/MyUdhaar';
 import QROnboarding from './pages/QROnboarding';
 import GSTBilling from './pages/GSTBilling';
-import MunafaAI from './pages/MunafaAI';
+import AadayaAI from './pages/MunafaAI';
 import Inventory from './pages/Inventory';
 import Payouts from './pages/Payouts';
 import Settings from './pages/Settings';
@@ -65,7 +65,7 @@ function App() {
           <ProtectedRoute><Payouts /></ProtectedRoute>
         } />
         <Route path="/ai" element={
-          <ProtectedRoute><MunafaAI /></ProtectedRoute>
+          <ProtectedRoute><AadayaAI /></ProtectedRoute>
         } />
         <Route path="/settings" element={
           <ProtectedRoute><Settings /></ProtectedRoute>

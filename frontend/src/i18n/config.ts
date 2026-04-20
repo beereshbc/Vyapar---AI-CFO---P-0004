@@ -10,7 +10,7 @@ const resources = {
       "udhaar": "Udhaar",
       "inventory": "Inventory",
       "gst": "GST Billing",
-      "ai_chat": "Ask Munafa",
+      "ai_chat": "Ask Aadaya",
       "settings": "Settings"
     }
   },
@@ -63,3 +63,4 @@ i18n
   });
 
 export default i18n;
+

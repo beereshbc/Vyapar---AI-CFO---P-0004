@@ -22,8 +22,41 @@ const Register = () => {
   
   const { registerUser } = useAuth();
   const navigate = useNavigate();
+  const [isCheckingPhone, setIsCheckingPhone] = useState(false);
 
-  const nextStep = () => setStep(prev => prev + 1);
+  const nextStep = async () => {
+    if (step === 1 && (!formData.storeName || !formData.storeAddress || !formData.gstin)) {
+      toast.error("Please provide your Store Name, Address, and GSTIN.");
+      return;
+    }
+    if (step === 2) {
+      if (!formData.ownerName || !formData.phone || !formData.password) {
+        toast.error("Please provide Owner Name, Phone, and Password.");
+        return;
+      }
+      
+      try {
+        setIsCheckingPhone(true);
+        // We bypass AuthContext here to make a direct API call without JWT
+        const response = await fetch('http://localhost:5000/api/auth/check-phone', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: formData.phone })
+        });
+        
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Phone validation failed");
+        }
+      } catch (err: any) {
+        setIsCheckingPhone(false);
+        toast.error(err.message || "This number is already registered.");
+        return; // BLOCK moving to step 3!
+      }
+      setIsCheckingPhone(false);
+    }
+    setStep(prev => prev + 1);
+  };
   const prevStep = () => setStep(prev => prev - 1);
 
   const handleComplete = async () => {
@@ -92,7 +125,7 @@ const Register = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">GSTIN (Optional)</label>
+                <label className="text-sm font-medium">GSTIN</label>
                 <Input 
                     placeholder="29XXXXX..." 
                     value={formData.gstin}
@@ -166,8 +199,8 @@ const Register = () => {
           )}
 
           {step < 3 ? (
-            <Button onClick={nextStep} className="bg-[#FF6B00] text-white">
-              Next Step <ArrowRight className="ml-2 h-4 w-4" />
+            <Button onClick={nextStep} disabled={isCheckingPhone} className="bg-[#FF6B00] text-white">
+              {isCheckingPhone ? "Checking..." : "Next Step"} {!isCheckingPhone && <ArrowRight className="ml-2 h-4 w-4" />}
             </Button>
           ) : (
             <Button onClick={handleComplete} className="bg-[#1A7A4A] text-white px-8">

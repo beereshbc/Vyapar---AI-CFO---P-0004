@@ -315,7 +315,7 @@ VITE_QR_BASE_URL=http://localhost:5173/qr
 | `/gst` | GST Billing + Invoices | Protected |
 | `/inventory` | Inventory Management | Protected |
 | `/payouts` | Payout Dashboard | Protected |
-| `/ai` | Munafa AI Chat | Protected |
+| `/ai` | Aadaya AI Chat | Protected |
 | `/settings` | Settings (5 tabs) | Protected |
 | `/my-udhaar` | Udhaarist Dashboard | Customer |
 
@@ -436,3 +436,4 @@ Built with ❤️ for Bharat's 6.3 Crore Store Owners.
 **VyaparAI CFO** — Powered by [Anthropic Claude](https://anthropic.com) • Payments by [Razorpay](https://razorpay.com) • Made in India 🇮🇳
 
 </div>
+

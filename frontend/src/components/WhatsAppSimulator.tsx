@@ -29,8 +29,8 @@ const WhatsAppSimulator: React.FC<WhatsAppSimulatorProps> = ({ isOpen, onClose, 
         setMessages([
           { 
             id: '1', 
-            text: `Namaste ${customerName}! Munafa AI reminder: You have an outstanding udhaar balance of ₹${amount}. Please clear it at your earliest convenience to maintain your high credit score. 🙏`, 
-            sender: 'munafa',
+            text: `Namaste ${customerName}! Aadaya AI reminder: You have an outstanding udhaar balance of ₹${amount}. Please clear it at your earliest convenience to maintain your high credit score. 🙏`, 
+            sender: 'aadaya',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           }
         ]);
@@ -45,7 +45,7 @@ const WhatsAppSimulator: React.FC<WhatsAppSimulatorProps> = ({ isOpen, onClose, 
     
     // Auto-WhatsApp redirection
     setTimeout(() => {
-      const text = encodeURIComponent(`Namaste ${customerName}! Munafa AI reminder: You have an outstanding udhaar balance of ₹${amount}. Please clear it at your earliest convenience to maintain your high credit score. 🙏`);
+      const text = encodeURIComponent(`Namaste ${customerName}! Aadaya AI reminder: You have an outstanding udhaar balance of ₹${amount}. Please clear it at your earliest convenience to maintain your high credit score. 🙏`);
       window.open(`https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${text}`, '_blank');
       onClose();
     }, 1500);
@@ -143,7 +143,7 @@ const WhatsAppSimulator: React.FC<WhatsAppSimulatorProps> = ({ isOpen, onClose, 
               >
                 <Smartphone className="h-6 w-6 animate-pulse" />
                 <div>
-                  <p className="text-xs font-bold">Munafa Relay Activated</p>
+                  <p className="text-xs font-bold">Aadaya Relay Activated</p>
                   <p className="text-[10px] opacity-80">Syncing with real WhatsApp app...</p>
                 </div>
               </motion.div>
@@ -156,3 +156,4 @@ const WhatsAppSimulator: React.FC<WhatsAppSimulatorProps> = ({ isOpen, onClose, 
 };
 
 export default WhatsAppSimulator;
+

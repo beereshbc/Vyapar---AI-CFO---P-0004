@@ -46,7 +46,7 @@ const GSTBilling = () => {
   };
 
   const handleWhatsAppShare = () => {
-    const text = `Hello! Here is your GST Invoice for the amount of ${formatCurrency(total)}. Please review.\n\nPowered by Munafa AI.`;
+    const text = `Hello! Here is your GST Invoice for the amount of ${formatCurrency(total)}. Please review.\n\nPowered by Aadaya AI.`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -207,3 +207,4 @@ const GSTBilling = () => {
 };
 
 export default GSTBilling;
+

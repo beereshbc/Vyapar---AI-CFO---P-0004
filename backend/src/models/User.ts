@@ -23,6 +23,14 @@ const UserSchema: Schema = new Schema(
     businessType: { type: String, required: true },
     storeAddress: { type: String },
     gstin: { type: String },
+    aiTone: { type: String, default: 'Negotiator' },
+    autoRemindMinBalance: { type: Number, default: 500 },
+    autoRemindOverdueDays: { type: Number, default: 15 },
+    opHoursStart: { type: String, default: '09:00' },
+    opHoursEnd: { type: String, default: '20:00' },
+    upiId: { type: String, default: '' },
+    accountNumber: { type: String, default: '' },
+    ifscCode: { type: String, default: '' }
   },
   { timestamps: true }
 );

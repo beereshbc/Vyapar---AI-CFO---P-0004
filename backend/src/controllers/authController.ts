@@ -73,3 +73,52 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const checkPhone = async (req: Request, res: Response) => {
+  try {
+    const { phone } = req.body;
+    const existingUser = await User.findOne({ phone });
+    if (existingUser) {
+      return res.status(400).json({ error: 'This phone number is already registered. Please login instead.' });
+    }
+    res.json({ available: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getSettings = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const userId = req.userId || req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const user = await User.findById(userId).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateSettings = async (req: Request, res: Response) => {
+  try {
+    // @ts-ignore
+    const userId = req.userId || req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const updates = req.body;
+    
+    // Prevent password/phone updates via settings route for security
+    delete updates.password;
+    delete updates.phone;
+
+    const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
