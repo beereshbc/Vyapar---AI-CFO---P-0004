@@ -78,7 +78,7 @@ const Settings = () => {
   const tabs = [
     { id: 'profile', name: 'Profile', icon: User },
     { id: 'store', name: 'Store Info', icon: Store },
-    { id: 'munafa', name: 'Munafa AI', icon: Bot },
+    { id: 'munafa', name: 'Aadaya AI', icon: Bot },
     { id: 'banking', name: 'Bank & UPI', icon: Landmark },
     { id: 'appearance', name: 'Appearance', icon: Paintbrush },
     { id: 'notifications', name: 'Alerts', icon: Bell },
@@ -179,7 +179,7 @@ const Settings = () => {
             <Card className="animate-in fade-in slide-in-from-right-4 border-orange-200 shadow-md">
               <CardHeader className="bg-orange-50/50 pb-4">
                 <CardTitle className="text-xl text-[#FF6B00] flex items-center gap-2">
-                  <Bot className="h-5 w-5" /> Munafa AI & Automation Hub
+                  <Bot className="h-5 w-5" /> Aadaya AI & Automation Hub
                 </CardTitle>
                 <CardDescription>Configure how your AI CFO interacts with your customers.</CardDescription>
               </CardHeader>
@@ -295,7 +295,7 @@ const Settings = () => {
                       className="border-green-300 font-bold bg-green-50 focus:bg-white text-green-900 transition-colors h-12" 
                     />
                   </div>
-                  <p className="text-[10px] text-green-700 italic border-l-2 border-green-400 pl-2">Munafa AI will automatically encode this UPI ID into a scannable QR on all outgoing WhatsApp invoices.</p>
+                  <p className="text-[10px] text-green-700 italic border-l-2 border-green-400 pl-2">Aadaya AI will automatically encode this UPI ID into a scannable QR on all outgoing WhatsApp invoices.</p>
                 </div>
 
                 <div className="space-y-4 pt-4 border-t border-gray-100">
@@ -419,3 +419,4 @@ const Settings = () => {
 };
 
 export default Settings;
+

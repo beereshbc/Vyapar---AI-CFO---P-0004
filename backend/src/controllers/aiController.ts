@@ -6,7 +6,7 @@ export const getInsights = async (req: AuthRequest, res: Response) => {
   try {
     const { message } = req.body;
     
-    // Simple business logic mock for "Munafa AI"
+    // Simple business logic mock for "Aadaya AI"
     const overdueCount = await Customer.countDocuments({ storeId: req.storeId, currentBalance: { $gt: 10000 } });
     
     let aiResponse = "I'm analyzing your business data... ";
@@ -24,3 +24,4 @@ export const getInsights = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
+

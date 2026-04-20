@@ -310,10 +310,11 @@ const GiveUdhaar = () => {
       )}
 
       <p className="text-[10px] text-center text-gray-400 font-medium px-12 leading-relaxed">
-        Munafa AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
+        Aadaya AI Tip: If you use voice input, ensure you mention the name and exact item for better GST classification.
       </p>
     </div>
   );
 };
 
 export default GiveUdhaar;
+

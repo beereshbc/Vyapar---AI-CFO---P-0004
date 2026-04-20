@@ -74,7 +74,7 @@ const MunafaAI = () => {
             <Bot className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Munafa AI</h1>
+            <h1 className="text-xl font-bold text-gray-800">AADAYA AI</h1>
             <div className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
               <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Online & Thinking</span>
@@ -114,7 +114,7 @@ const MunafaAI = () => {
                 )}
               </div>
               <span className="text-[8px] text-gray-400 font-medium mt-1 px-1 uppercase tracking-tighter">
-                {m.time} {m.role === 'ai' ? '• MUNAFA AI' : '• YOU'}
+                {m.time} {m.role === 'ai' ? '• AADAYA AI' : '• YOU'}
               </span>
             </div>
           ))}
@@ -178,3 +178,4 @@ const MunafaAI = () => {
 };
 
 export default MunafaAI;
+
