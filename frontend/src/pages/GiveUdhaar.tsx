@@ -9,43 +9,97 @@ import { useNavigate } from 'react-router-dom';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { api } from '@/lib/api';
 
 const GiveUdhaar = () => {
   const { isListening, transcript, error, startListening } = useSpeechRecognition();
   const [stage, setStage] = useState('input'); // input, confirmation, success
   const [entry, setEntry] = useState({
+    customerId: '',
     customer: '',
     amount: '',
     reason: 'General Items'
   });
+  const [isSaving, setIsSaving] = useState(false);
+  const [customers, setCustomers] = useState<any[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const data = await api.get('/ledger/customers');
+        setCustomers(data);
+      } catch (err: any) {
+        console.error("Failed to fetch customers");
+      }
+    };
+    fetchCustomers();
+  }, []);
+
+  useEffect(() => {
     if (transcript) {
-      // Simple parser: "Name Amount" or "Amount for Name"
-      const words = transcript.split(' ');
-      let amount = '';
-      let name = '';
+      console.log("Parsing transcript:", transcript);
+      const text = transcript.toLowerCase();
       
-      const digitMatch = transcript.match(/\d+/);
-      if (digitMatch) {
-        amount = digitMatch[0];
-        name = transcript.replace(amount, '').replace('for', '').replace('to', '').trim();
-      } else {
-        name = transcript;
+      // 1. Extract Amount (Handles digits better)
+      let amount = '';
+      const amountMatch = text.match(/(\d+)/);
+      if (amountMatch) {
+        amount = amountMatch[1];
       }
       
+      // 2. Extract Customer Name & Reason
+      let name = '';
+      let reason = 'General Items';
+      
+      // Try to match against existing customers first
+      const matchedCustomer = customers.find(c => 
+        text.includes(c.name.toLowerCase())
+      );
+      
+      if (matchedCustomer) {
+        name = matchedCustomer.name;
+        setEntry(prev => ({ ...prev, customerId: matchedCustomer._id }));
+      }
+      
+      // Smart parsing for "Amount for Reason" or "Name ko Amount Reason ke liye"
+      // Split by common keywords
+      const separators = ['for', 'ko', 'liye', 'against', 'ka', 'ke'];
+      let reasonCandidate = '';
+      
+      for (const sep of separators) {
+        if (text.includes(` ${sep} `)) {
+           const parts = text.split(` ${sep} `);
+           // If "500 for Doodh", parts[1] is reason
+           // If "Ramesh ko 500", parts[0] might be name
+           reasonCandidate = parts[1].replace(amount, '').trim();
+           break;
+        }
+      }
+      
+      // If we didn't find a matched customer, try to extract name from text
+      if (!name) {
+          // Fallback: extract name as the first part if not digits
+          const parts = text.split(' ');
+          if (parts[0] && isNaN(Number(parts[0]))) {
+              name = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+          }
+      }
+
       setEntry(prev => ({
         ...prev,
         customer: name || prev.customer,
-        amount: amount || prev.amount
+        amount: amount || prev.amount,
+        reason: reasonCandidate || prev.reason
       }));
       
+      // Only auto-confirm if we have the critical bits
       if (amount && name) {
-        setStage('confirmation');
+        toast.info("Munafa understood! Confirming your entry...");
+        setTimeout(() => setStage('confirmation'), 1000);
       }
     }
-  }, [transcript]);
+  }, [transcript, customers]);
 
   useEffect(() => {
     if (error) {
@@ -58,8 +112,36 @@ const GiveUdhaar = () => {
     setStage('confirmation');
   };
 
-  const handleConfirm = () => {
-    setStage('success');
+  const handleConfirm = async () => {
+    setIsSaving(true);
+    try {
+      // 1. If customer doesn't exist by ID, we create one (simplification for this demo)
+      // In a real app, you'd select an existing ID or explicitly create a new one.
+      let targetId = entry.customerId;
+      
+      if (!targetId) {
+        const newCust = await api.post('/ledger/customers', { 
+            name: entry.customer, 
+            phone: '0000000000', // Placeholder for new quick-add
+            initialBalance: 0 
+        });
+        targetId = newCust._id;
+      }
+
+      // 2. Add the transaction
+      await api.post('/ledger/transactions', {
+        customerId: targetId,
+        amount: Number(entry.amount),
+        type: 'Credit',
+        description: entry.reason
+      });
+
+      setStage('success');
+    } catch (err: any) {
+      toast.error(err.message || "Relay failure: Entry not saved.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -115,9 +197,18 @@ const GiveUdhaar = () => {
                       placeholder="Search customer name..." 
                       className="pl-10 h-12 bg-gray-50/50"
                       value={entry.customer}
-                      onChange={(e) => setEntry({...entry, customer: e.target.value})}
+                      onChange={(e) => {
+                          const val = e.target.value;
+                          const existing = customers.find(c => c.name.toLowerCase() === val.toLowerCase());
+                          setEntry({...entry, customer: val, customerId: existing?._id || ''});
+                      }}
                       required
                     />
+                    {entry.customer && !entry.customerId && !isListening && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <Badge className="bg-blue-500 text-[10px] uppercase">New Customer</Badge>
+                        </div>
+                    )}
                   </div>
                 </div>
 
@@ -181,8 +272,14 @@ const GiveUdhaar = () => {
               <Button variant="outline" className="flex-1 h-14 border-red-100 text-red-500 hover:bg-red-50 gap-2" onClick={() => setStage('input')}>
                 <XCircle className="h-5 w-5" /> Cancel
               </Button>
-              <Button className="flex-1 h-14 bg-[#1A7A4A] text-white gap-2 shadow-lg shadow-green-200" onClick={handleConfirm}>
-                <CheckCircle2 className="h-5 w-5" /> Confirm Save
+              <Button className="flex-1 h-14 bg-[#1A7A4A] text-white gap-2 shadow-lg shadow-green-200" onClick={handleConfirm} disabled={isSaving}>
+                {isSaving ? (
+                    <span className="flex items-center gap-2 animate-pulse">Syncing...</span>
+                ) : (
+                    <>
+                        <CheckCircle2 className="h-5 w-5" /> Confirm Save
+                    </>
+                )}
               </Button>
             </div>
           </CardContent>

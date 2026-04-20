@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { api } from '@/lib/api';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +12,7 @@ const GSTBilling = () => {
   const [items, setItems] = useState([
     { id: '1', name: 'Basmati Rice 5kg', price: 650, qty: 1, gst: 5 },
   ]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const addItem = () => {
     setItems([...items, { id: Math.random().toString(), name: '', price: 0, qty: 1, gst: 18 }]);
@@ -23,8 +26,29 @@ const GSTBilling = () => {
   const calculateGST = () => items.reduce((sum, item) => sum + (item.price * item.qty * (item.gst / 100)), 0);
   const total = calculateSubtotal() + calculateGST();
 
-  const handleDownload = () => {
-    window.print();
+  const handleDownload = async () => {
+    try {
+      setIsSaving(true);
+      await api.post('/invoices', {
+        items,
+        subtotal: calculateSubtotal(),
+        gstAmount: calculateGST(),
+        total
+      });
+      toast.success("Invoice saved automatically!");
+      setTimeout(() => window.print(), 500);
+    } catch (err) {
+      toast.error("Failed to save invoice");
+      window.print(); // print anyway as fallback
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleWhatsAppShare = () => {
+    const text = `Hello! Here is your GST Invoice for the amount of ${formatCurrency(total)}. Please review.\n\nPowered by Munafa AI.`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
   };
 
   return (
@@ -153,10 +177,10 @@ const GSTBilling = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-2 p-4 bg-gray-50">
-              <Button onClick={handleDownload} className="w-full bg-[#FF6B00] text-white font-bold h-12 shadow-lg">
-                <Download className="h-4 w-4 mr-2" /> Download PDF
+              <Button onClick={handleDownload} disabled={isSaving} className="w-full bg-[#FF6B00] text-white font-bold h-12 shadow-lg">
+                <Download className="h-4 w-4 mr-2" /> {isSaving ? "Saving..." : "Download PDF"}
               </Button>
-              <Button variant="outline" className="w-full border-[#1A7A4A] text-[#1A7A4A] font-bold h-12">
+              <Button onClick={handleWhatsAppShare} variant="outline" className="w-full border-[#1A7A4A] text-[#1A7A4A] font-bold h-12">
                 <Share2 className="h-4 w-4 mr-2" /> Share on WhatsApp
               </Button>
             </CardFooter>

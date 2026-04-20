@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { api } from '@/lib/api';
 
 interface User {
   id: string;
@@ -12,7 +13,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (credentials: any) => Promise<boolean>;
   logout: () => void;
-  registerUser: (phone: string, name: string, countryCode?: string) => void;
+  registerUser: (userData: any) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -37,56 +38,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  const registerUser = (phone: string, name: string, countryCode: string = '+91') => {
-    const fullPhone = `${countryCode}${phone}`;
-    const registered = JSON.parse(localStorage.getItem('vyapar_registered_numbers') || '[]');
-    if (!registered.includes(fullPhone)) {
-      registered.push(fullPhone);
-      localStorage.setItem('vyapar_registered_numbers', JSON.stringify(registered));
+  const registerUser = async (userData: any) => {
+    try {
+      await api.post('/auth/register', userData);
+    } catch (err: any) {
+      throw new Error(err.message);
     }
   };
 
   const login = async (credentials: any) => {
     setIsLoading(true);
-    const { phone, countryCode = '+91', password } = credentials;
-    const fullPhone = `${countryCode}${phone}`;
-    
-    const registered = JSON.parse(localStorage.getItem('vyapar_registered_numbers') || '[]');
-    const isUserRegistered = registered.includes(fullPhone);
-    
-    if (!isUserRegistered) {
-      setIsLoading(false);
-      throw new Error(`Number ${fullPhone} not found... first register!!!!`);
-    }
-
-    // Validation: 10 digits for India, 8-15 for international
-    const isValidPhone = countryCode === '+91' 
-      ? /^\d{10}$/.test(phone) 
-      : /^\d{8,15}$/.test(phone);
-
-    if (isValidPhone && password?.length >= 6) {
-      const mockUser: User = {
-        id: fullPhone,
-        name: phone === '9876543210' ? 'Authorized Owner' : 'Shopkeeper',
-        role: 'shopkeeper',
-        storeId: 'store_123'
-      };
-      setUser(mockUser);
-      localStorage.setItem('vyapar_user', JSON.stringify(mockUser));
+    try {
+      const data = await api.post('/auth/login', credentials);
+      
+      setUser(data.user);
+      localStorage.setItem('vyapar_token', data.token);
+      localStorage.setItem('vyapar_user', JSON.stringify(data.user));
+      
       setIsLoading(false);
       return true;
-    } else {
+    } catch (err: any) {
       setIsLoading(false);
-      throw new Error(isValidPhone 
-        ? 'Invalid password (min 6 chars)' 
-        : countryCode === '+91' 
-          ? 'Please enter a valid 10-digit Indian phone number' 
-          : 'Please enter a valid international phone number');
+      throw new Error(err.message || 'Login failed');
     }
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('vyapar_token');
     localStorage.removeItem('vyapar_user');
   };
 

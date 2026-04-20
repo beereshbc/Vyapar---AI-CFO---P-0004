@@ -16,7 +16,8 @@ const Register = () => {
     ownerName: '',
     phone: '',
     countryCode: '+91',
-    password: ''
+    password: '',
+    businessType: ''
   });
   
   const { registerUser } = useAuth();
@@ -25,14 +26,18 @@ const Register = () => {
   const nextStep = () => setStep(prev => prev + 1);
   const prevStep = () => setStep(prev => prev - 1);
 
-  const handleComplete = () => {
-    if (!formData.phone || !formData.ownerName) {
-      toast.error("Please provide owner details and phone number.");
+  const handleComplete = async () => {
+    if (!formData.phone || !formData.ownerName || !formData.businessType) {
+      toast.error("Please provide owner details, phone number and business type.");
       return;
     }
-    registerUser(formData.phone, formData.ownerName, formData.countryCode);
-    toast.success("Registration complete! Please login now.");
-    navigate('/login');
+    try {
+      await registerUser(formData);
+      toast.success("Registration complete! Please login now.");
+      navigate('/login');
+    } catch (err: any) {
+      toast.error(err.message || "Registration failed.");
+    }
   };
 
   const steps = [
@@ -80,11 +85,19 @@ const Register = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Store Address</label>
-                <Input placeholder="City, State" />
+                <Input 
+                    placeholder="City, State" 
+                    value={formData.storeAddress}
+                    onChange={(e) => setFormData({...formData, storeAddress: e.target.value})}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">GSTIN (Optional)</label>
-                <Input placeholder="29XXXXX..." />
+                <Input 
+                    placeholder="29XXXXX..." 
+                    value={formData.gstin}
+                    onChange={(e) => setFormData({...formData, gstin: e.target.value})}
+                />
               </div>
             </div>
           )}
@@ -124,7 +137,15 @@ const Register = () => {
               <p className="text-sm font-medium mb-2">Select Business Type</p>
               <div className="grid grid-cols-2 gap-3">
                 {['Kirana Store', 'Medical Shop', 'General Store', 'Textiles', 'Electronics', 'Others'].map((type) => (
-                  <Button key={type} variant="outline" className="justify-start hover:border-[#FF6B00] hover:bg-orange-50">
+                  <Button 
+                    key={type} 
+                    variant={formData.businessType === type ? 'default' : 'outline'} 
+                    className={cn(
+                        "justify-start transition-all",
+                        formData.businessType === type ? "bg-[#FF6B00] border-[#FF6B00]" : "hover:border-[#FF6B00] hover:bg-orange-50"
+                    )}
+                    onClick={() => setFormData({...formData, businessType: type})}
+                  >
                     {type}
                   </Button>
                 ))}
